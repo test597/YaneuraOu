@@ -449,10 +449,6 @@ bool YaneuraOuEngine::qsearch_psv(const std::string& inputPath,
                                   size_t             workerCount,
                                   std::string&       message) {
 
-#if !defined(USE_SFEN_PACKER)
-    message = "qsearch_psv requires USE_SFEN_PACKER.";
-    return false;
-#else
     if (inputPath.empty() || outputPath.empty())
     {
         message = "usage: qsearch_psv input.psv output.psv [workers]";
@@ -577,7 +573,6 @@ bool YaneuraOuEngine::qsearch_psv(const std::string& inputPath,
        << " workers=" << workerCount;
     message = ss.str();
     return total.decodeErrors == 0 && total.illegalPv == 0;
-#endif
 }
 
 // utility functions
@@ -3231,9 +3226,9 @@ Value YaneuraOuWorker::search(Position& pos, Stack* ss, Value alpha, Value beta,
         && pos.non_pawn_material(us)
     // 💡 盤上にpawn以外の駒がある ≒ pawnだけの終盤ではない。
     // 🤔 将棋でもこれに相当する条件が必要かも。
+#endif
         && ss->ply >= nmpMinPly
         // 同じ手番側に連続してnull moveを適用しない
-#endif
         && !is_loss(beta)
     )
     {
@@ -3262,7 +3257,6 @@ Value YaneuraOuWorker::search(Position& pos, Stack* ss, Value alpha, Value beta,
         undo_null_move(pos);
 
         if (nullValue >= beta && !is_win(nullValue))
-#if STOCKFISH
         // Do not return unproven mate or TB scores
         // 証明されていないmate scoreやTB scoreはreturnで返さない。
         {
@@ -3293,11 +3287,6 @@ Value YaneuraOuWorker::search(Position& pos, Stack* ss, Value alpha, Value beta,
             if (v >= beta)
                 return nullValue;
         }
-#else
-            // null move pruningの検証探索は、パス (null move) した方が有利になる局面での誤った枝刈り防止のために存在するが、
-            // 将棋ではそのようなことはチェスよりはるかに少ないため不要。
-            return nullValue;
-#endif
     }
 
 	// ここでimproving計算しなおす。
