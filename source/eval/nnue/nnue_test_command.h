@@ -8,10 +8,13 @@
 #if defined(ENABLE_TEST_CMD) && defined(EVAL_NNUE)
 
 namespace YaneuraOu {
+
+class IEngine;
+
 namespace Eval::NNUE {
 
 // NNUE評価関数に関するUSI拡張コマンド
-void TestCommand(Position& pos, std::istream& stream);
+void TestCommand(IEngine& engine, std::istream& stream);
 
 } // namespace Eval::NNUE
 } // namespace YaneuraOu

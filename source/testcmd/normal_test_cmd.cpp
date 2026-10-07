@@ -15,6 +15,7 @@
 #include "../search.h"
 #include "../movegen.h"
 #include "../evaluate.h"
+#include "../eval/nnue/nnue_test_command.h"
 
 namespace YaneuraOu {
 namespace {
@@ -380,6 +381,9 @@ namespace Test
 		else if (token == "autoplay")         auto_play(engine, is);       // 連続自己対局を行う。
 #if defined(YANEURAOU_ENGINE)
 		else if (token == "eval_accuracy")    eval_accuracy(engine, is);   // PSV に対し evaluate() の sign 一致率を測る。
+#endif
+#if defined(EVAL_NNUE)
+		else if (token == "nn")               Eval::NNUE::TestCommand(engine, is); // NNUE評価関数に関するテストコマンド。
 #endif
 		else return false;									               // どのコマンドも処理することがなかった
 			
