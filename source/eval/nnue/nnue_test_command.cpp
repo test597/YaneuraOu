@@ -370,6 +370,9 @@ void AppendLayers(LayerTag<T>, std::vector<SizeRow>& rows, const std::string& in
   rows.push_back({indent + "unknown layer", sizeof(T)});
 }
 
+#if !defined(SFNNwoPSQT)
+
+// 従来型NNUEの層。(SFNNのビルドではこれらの層のheaderは読み込まれない)
 template <IndexType OutputDimensions, IndexType Offset>
 void AppendLayers(LayerTag<Layers::InputSlice<OutputDimensions, Offset>>, std::vector<SizeRow>& rows,
                   const std::string& indent) {
@@ -403,6 +406,8 @@ void AppendLayers(LayerTag<Layers::AffineTransformSparseInput<PreviousLayer, Out
                       + std::to_string(L::kOutputDimensions) + "]",
                   sizeof(L) - sizeof(PreviousLayer)});
 }
+
+#endif // !defined(SFNNwoPSQT)
 
 #if defined(SFNNwoPSQT)
 
